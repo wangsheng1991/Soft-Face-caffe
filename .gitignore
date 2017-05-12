@@ -1,11 +1,11 @@
 .DS_Store
-
 data/AFLW.zip
 data/net_7876
 data/lfw_5590
-data/lmdb/*
-data/trainAFLW/*
-data/testAFLW/*
+data/lmdb/test_lmdb/*
+data/lmdb/train_lmdb/*
+data/trainAFLW/*.jpg
+data/testAFLW/*.jpg
 data/*.txt
 python/*.pyc
 python/normlizedMSE.py
