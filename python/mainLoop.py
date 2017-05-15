@@ -35,7 +35,9 @@ PATH_TO_DEPLOY_TXT = os.path.join(ROOT, 'model', 'vanilla_deploy.prototxt')
 
 ###########################    STEPS TO RUN       ####################
 #STEPS =['trainSetHD5', 'calcTrainSetMean'] # AFLW_STEPS+AFW_STEPS # Run AFLW and AFW steps
-STEPS = ['downloadAFLW', 'makeAFLWTestSet', 'makeAFLWTrainSet']
+#STEPS = ['downloadAFLW', 'makeAFLWTestSet', 'makeAFLWTrainSet']
+STEPS = ['downloadAFLW', 'makeAFLWTrainSet', 'makeAFLWTestSet']
+
 
 ##########################################    SCRIPT STEPS       ##################################################
 
@@ -95,26 +97,7 @@ if 'makeAFLWTrainSet' in STEPS :
     cropFace(dataRowsTestValid, destpath, destpathlist)	
     print "Done .."    
 
-
-'''  
-    destpath = DATA_PATH + '/trainAFLW'
-    output_file = open(destpath+'/trainImageList.txt', 'w')
-
-    import csv
-    writer = csv.writer(output_file, quoting=csv.QUOTE_NONE)
- 
-    # dataRowsTestValid - valid testset(face exist), landmark points(left eye, right eye, nose, left mouth, right mouth)	
-    for row in dataRowsTestValid:
-	writer.writerow((row.name +' 0').split(','))
-	if os.path.isfile( DATA_PATH+'/lfw_5590/'+ row.name):
-		shutil.copy( DATA_PATH+'/lfw_5590/'+ row.name, destpath) 
-	elif os.path.isfile( DATA_PATH+'/net_7876/'+ row.name):
-		shutil.copy( DATA_PATH+'/net_7876/'+ row.name, destpath)
-'''
-
-
-
- 
+''' 
 DEBUG = True
 if 'testErrorMini' in STEPS:
     with open('testSetMini.pickle','r') as f:
@@ -137,46 +120,8 @@ if 'testErrorMini' in STEPS:
             
 
     print "Test Error mini:", testErrorMini
-
-  
-  
-if 'trainSetHD5' in STEPS:
-    dataRowsTrain_CSV = createDataRowsFromCSV(CSV_TRAIN, DataRow.DataRowFromNameBoxInterlaved, DATA_PATH)
-    print "Finished reading %d rows from training data. Parsing BBox...." % len(dataRowsTrain_CSV)
-    dataRowsTrainValid,R = getValidWithBBox(dataRowsTrain_CSV)
-    print "Original train:",len(dataRowsTrain_CSV), "Valid Rows:", len(dataRowsTrainValid), " noFacesAtAll", R.noFacesAtAll, " outside:", R.outsideLandmarks, " couldNotMatch:", R.couldNotMatch
-    dataRowsTrain_CSV=[]  # remove from memory
-    
-    writeHD5(dataRowsTrainValid, ROOT+'/caffeData/hd5/train.hd5', ROOT+'/caffeData/train.txt', MEAN_TRAIN_SET, STD_TRAIN_SET ,mirror=True)
-    print "Finished writing train to caffeData/train.txt"
-    
-
-#%% Calculate train mean image - Assume data was read to dataRowsTrainValid
-if 'calcTrainSetMean' in STEPS:
-    print ('Calculating train data mean value')
-    meanTrainSet = np.zeros([40,40,3], dtype='double')
-    for dataRow in dataRowsTrainValid:
-        meanTrainSet += dataRow.copyCroppedByBBox(dataRow.fbbox).image.astype('double')
-    
-    MEAN_TRAIN_SET = meanTrainSet / len(dataRowsTrainValid)
-    cv2.imwrite(os.path.join(ROOT, 'trainMean.png'), (MEAN_TRAIN_SET).astype('uint8'))
-    print ('Finished Calculating train data mean value to file trainMean.png', MEAN_TRAIN_SET.mean())
-
-    print ('Calculating train data std value')
-
-    stdTrainSet = np.zeros([40,40,3], dtype='double')
-    for dataRow in dataRowsTrainValid:
-        diff = dataRow.copyCroppedByBBox(dataRow.fbbox).image.astype('double') - MEAN_TRAIN_SET
-        stdTrainSet += diff*diff
-        
-    stdTrainSet /= len(dataRowsTrainValid)
-    STD_TRAIN_SET = stdTrainSet**0.5
-    cv2.imwrite(os.path.join(ROOT, 'trainSTD.png'), (STD_TRAIN_SET).astype('uint8'))
-    print 'Finished Calculating train data std value to file trainSTD.png with mean', STD_TRAIN_SET.mean()
-#else:
-    #MEAN_TRAIN_SET = cv2.imread(os.path.join(ROOT, 'trainMean.png')).astype('f4')
-    #STD_TRAIN_SET  = cv2.imread(os.path.join(ROOT, 'trainSTD.png')).astype('f4')
-
+'''
+   
 
 # Run the same caffe test set using python
 DEBUG = False  # Set this to true if you wish to plot the images

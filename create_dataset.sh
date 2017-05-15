@@ -38,7 +38,7 @@ if [ ! -d "$VAL_DATA_ROOT" ]; then
   exit 1
 fi
 
-echo "Creating train lmdb..."
+echo "Creating train lmdb ..."
 
 GLOG_logtostderr=1 $TOOLS/convert_imageset \
     --resize_height=$RESIZE_HEIGHT \
@@ -48,7 +48,7 @@ GLOG_logtostderr=1 $TOOLS/convert_imageset \
     $DATA/trainAFLW/trainImageList.txt \
     $EXAMPLE/train_lmdb
 
-echo "Creating val lmdb..."
+echo "Creating val lmdb ..."
 
 GLOG_logtostderr=1 $TOOLS/convert_imageset \
     --resize_height=$RESIZE_HEIGHT \
@@ -58,11 +58,11 @@ GLOG_logtostderr=1 $TOOLS/convert_imageset \
     $DATA/testAFLW/testImageList.txt \
     $EXAMPLE/test_lmdb
 
-echo "Done."
+echo "Done .."
 
 echo "making mean image....."
 $TOOLS/compute_image_mean $EXAMPLE/train_lmdb \
   $DATA/lmdb/mean_image.binaryproto
 
-echo "Done."
+echo "Done .."
 

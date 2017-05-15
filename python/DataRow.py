@@ -126,9 +126,13 @@ def cropFace(dataRows, destpath, destpathlist, IMAGE_SIZE=40, mirror=False):
             print "Warning, no fbbox"
             continue
         
-        writer.writerow((dataRowOrig.name +' 0').split(','))
+	
 
         dataRow = dataRowOrig.copyCroppedByBBox(dataRowOrig.fbbox)  # Get a cropped scale copy of the data row
+
+	leftEyeIndex = int(round(dataRow.leftEye[0] + dataRow.leftEye[1] * 40))
+        writer.writerow((dataRowOrig.name + ' ' + str(leftEyeIndex)).split(','))
+
         scaledLM = dataRow.landmarksScaledMinus05_plus05() 
         image = dataRow.image.astype('f4')
         #image = (image-meanTrainSet)/(1.e-6 + stdTrainSet)
